@@ -103,16 +103,13 @@ def add_comment(request, post_id):
 
 @login_required
 def follow_index(request):
-    page_obj = Post.objects.filter(
+    posts = Post.objects.filter(
         author__following__user=request.user
-    ).select_related('author', 'group')
-    page_count = len(page_obj)
+    )
+    page_obj = paginations(request, posts)
     context = {
         'page_obj': page_obj,
-        'page_count': page_count,
-        'follow': True
     }
-    context.update(paginations(page_obj, request))
     return render(request, 'posts/follow.html', context)
 
 
@@ -124,7 +121,7 @@ def profile_follow(request, username):
             user=request.user,
             author=author
         )
-    return redirect('posts:follow_index')
+    return redirect('posts:profile', username=username)
 
 
 @login_required
@@ -134,4 +131,4 @@ def profile_unfollow(request, username):
         user=request.user,
         author=author
     ).delete()
-    return redirect('posts:follow_index')
+    return redirect('posts:profile', username=username)

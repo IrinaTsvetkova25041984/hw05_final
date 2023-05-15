@@ -104,9 +104,6 @@ class Follow(models.Model):
         related_name='following',
     )
 
-    def __str__(self):
-        return f'{self.user} {self.author}'
-
     class Meta:
         constraints = [
             models.UniqueConstraint(
@@ -114,3 +111,6 @@ class Follow(models.Model):
                 name='unique_follow'
             ),
         ]
+
+    def __str__(self):
+        return f'Подписка {self.user} на {self.author}'
